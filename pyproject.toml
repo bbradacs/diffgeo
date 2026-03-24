@@ -1,0 +1,9 @@
+[project]
+name = "diffgeo"
+version = "0.1.0"
+description = "Minimal differential geometry toolkit built on sympy"
+dependencies = ["sympy"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

@@ -1,5 +1,8 @@
+import sympy as sp
+
 class Metric:
-    def __init__(self, coords, g):
-        self.coords = coords        # symbols (x, y, ...)
-        self.g = g                  # matrix (sympy Matrix)
-        self.g_inv = g.inv()
+    def __init__(self, coords, g_matrix):
+        self.coords = coords
+        self.g = sp.Matrix(g_matrix)
+        self.g_inv = self.g.inv()
+        self.dim = len(coords)
