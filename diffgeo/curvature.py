@@ -1,3 +1,4 @@
+from itertools import product
 import sympy as sp
 from .derivatives import d
 import diffgeo
@@ -29,15 +30,12 @@ def riemann_tensor(metric, Gamma):
             sum(Gamma[k, j, m] * Gamma[m, i, l] for m in range(dim))
         )
 
-    # Build dictionary instead of nested lists
+    # Build dictionary
     R_dict = {}
-    for k in range(dim):
-        for l in range(dim):
-            for i in range(dim):
-                for j in range(dim):
-                    val = R(k, l, i, j)
-                    if val != 0:  # optional: store only nonzero
-                        R_dict[(k, l, i, j)] = val
+    for idx in product(range(dim), repeat=4):  # 4 indices: k, l, i, j
+        val = R(*idx)
+        if val != 0:  # optional: store only nonzero
+            R_dict[idx] = val
 
     return Riemann(R_dict)
 
@@ -62,11 +60,10 @@ def ricci_tensor(metric, Riemann):
 
     # Build dictionary instead of nested lists
     Ricci_dict = {}
-    for i in range(dim):
-        for j in range(dim):
-            val = ricci(i, j)
-            if val != 0:  # optional: store only nonzero entries
-                Ricci_dict[(i, j)] = val
+    for idx in product(range(dim), repeat=2):  # 2 indices: i, j
+        val = ricci(*idx)
+        if val != 0:  # optional: store only nonzero entries
+            Ricci_dict[idx] = val
 
     return Ricci(Ricci_dict)
 
