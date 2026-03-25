@@ -3,6 +3,17 @@ from .derivatives import d
 import diffgeo
 from diffgeo import create_metric
 
+class Riemann:
+    def __init__(self, data):
+        """
+        data: dict with keys (k, l, i, j) and values Riemann^k_{lij}
+        """
+        self._data = data
+
+    def __getitem__(self, key):
+        """Riemann[k, l, i, j]"""
+        return self._data.get(key, 0)  # default to 0 if missing
+
 def riemann_tensor(metric, Gamma):
     coords = metric.coords
     dim = metric.dim
@@ -28,32 +39,43 @@ def riemann_tensor(metric, Gamma):
                     if val != 0:  # optional: store only nonzero
                         R_dict[(k, l, i, j)] = val
 
-    return R_dict
+    return Riemann(R_dict)
 
-def ricci_tensor(metric, R):
+class Ricci:
+    def __init__(self, data):
+        """
+        data: dict with keys (i, j) and values Ricci^i_{j}
+        """
+        self._data = data
+
+    def __getitem__(self, key):
+        """Ricci[i, j]"""
+        return self._data.get(key, 0)  # default to 0 if missing
+
+def ricci_tensor(metric, Riemann):
     dim = metric.dim
 
     def ricci(i, j):
         return sp.simplify(
-            sum(R.get((k, i, k, j), 0) for k in range(dim))
+            sum(Riemann[k, i, k, j] for k in range(dim))
         )
 
     # Build dictionary instead of nested lists
-    Ric_dict = {}
+    Ricci_dict = {}
     for i in range(dim):
         for j in range(dim):
             val = ricci(i, j)
             if val != 0:  # optional: store only nonzero entries
-                Ric_dict[(i, j)] = val
+                Ricci_dict[(i, j)] = val
 
-    return Ric_dict
+    return Ricci(Ricci_dict)
 
 def scalar_curvature(metric, Ricci):
     dim = metric.dim
 
     return sp.simplify(
         sum(
-            metric.inv[i, j] * Ricci[i][j]
+            metric.inv[i, j] * Ricci[i, j]
             for i in range(dim)
             for j in range(dim)
         )
