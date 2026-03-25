@@ -1,31 +1,31 @@
-def christoffel_terms(Gamma):
-    dim = len(Gamma)
+def christoffel_terms(metric, gamma):
+    dim = metric.dim
     return {
-        (k, i, j): Gamma[k][i][j]
+        (k, i, j): gamma[k,i,j]
         for k in range(dim)
         for i in range(dim)
         for j in range(dim)
-        if Gamma[k][i][j] != 0
+        if gamma[k,i,j] != 0
     }
 
-def riemann_terms(R):
-    dim = len(R)
+def riemann_terms(metric,R):
+    dim = metric.dim
     return {
-        (k, l, i, j): R[k][l][i][j]
+        (k, l, i, j): R[k,l,i,j]
         for k in range(dim)
         for l in range(dim)
         for i in range(dim)
         for j in range(dim)
-        if R[k][l][i][j] != 0
+        if R[k,l,i,j] != 0
     }
     
-def ricci_terms(Ricci):
-    dim = len(ricci)
+def ricci_terms(metric, ricci):
+    dim = metric.dim
     return {
-        (i, j): ricci[i][j]
+        (i, j): ricci[i,j]
         for i in range(dim)
         for j in range(dim)
-        if ricci[i][j] != 0
+        if ricci[i,j] != 0
     }  
 
 def scalar_terms(scalar):

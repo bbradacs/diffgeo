@@ -1,5 +1,6 @@
-from .metric import Metric
+from .metric import Metric, create_metric
 from .derivatives import d
+from .christoffel import Gamma
 from .christoffel import christoffel_symbols
 from .curvature import riemann_tensor, ricci_tensor 
 from .curvature import scalar_curvature
