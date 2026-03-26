@@ -1,11 +1,13 @@
 from diffgeo import Tensor
+from diffgeo import Gamma, Riemann, Ricci
 
 def test_gamma():
-    pass
+    gamma = Gamma({}, 0)
 
 def test_riemann():
-    pass
+    riemann = Riemann({}, 0)
 
 
 def test_ricci():
-    pass
+    ricci = Ricci({}, 0)    
+

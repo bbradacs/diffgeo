@@ -1,9 +1,10 @@
 from itertools import product
 import sympy as sp
-from diffgeo import d
+from diffgeo import Tensor, d
 
-class Riemann:
-    def __init__(self, data):
+class Riemann(Tensor):
+    def __init__(self, data, dim):
+        super().__init__(data, ['up', 'down', 'down', 'down'], dim)
         """
         data: dict with keys (k, l, i, j) and values Riemann^k_{lij}
         """
@@ -35,4 +36,4 @@ def riemann_tensor(metric, Gamma):
         if val != 0:  # optional: store only nonzero
             R_dict[idx] = val
 
-    return Riemann(R_dict)
+    return Riemann(R_dict, dim)

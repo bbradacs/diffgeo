@@ -1,9 +1,10 @@
 from itertools import product
 import sympy as sp
-from diffgeo import Riemann
+from diffgeo import Tensor
 
-class Ricci:
-    def __init__(self, data):
+class Ricci(Tensor):
+    def __init__(self, data, dim):
+        super().__init__(data, ['down', 'down'], dim)
         """
         data: dict with keys (i, j) and values Ricci^i_{j}
         """
@@ -28,4 +29,5 @@ def ricci_tensor(metric, riemann):
         if val != 0:  # optional: store only nonzero entries
             Ricci_dict[idx] = val
 
-    return Ricci(Ricci_dict)
+    return Ricci(Ricci_dict, dim)
+

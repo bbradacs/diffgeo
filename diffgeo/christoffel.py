@@ -1,8 +1,9 @@
 import sympy as sp
-from .derivatives import d
+from diffgeo import Tensor, d
 
-class Gamma:
-    def __init__(self, data):
+class Gamma(Tensor):
+    def __init__(self, data, dim):
+        super().__init__(data, ['up', 'down', 'down'], dim)
         """
         data: dict with keys (k, i, j) and values Γ^k_{ij}
         """
@@ -34,4 +35,4 @@ def christoffel_symbols(g_down, g_up):
                 )
                 gamma_dict[(k, i, j)] = sp.simplify(s / 2)
     
-    return Gamma(gamma_dict)
+    return Gamma(gamma_dict, dim)
