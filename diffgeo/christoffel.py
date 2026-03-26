@@ -12,12 +12,12 @@ class Gamma:
         """Access Christoffel symbols like Gamma[k, i, j]"""
         return self._data.get(key, 0)  # default to 0 if missing
 
-def christoffel_symbols(g):
+def christoffel_symbols(g_down, g_up):
     """
-    Compute Christoffel symbols from a Metric object g and return a Gamma object.
+    Compute Christoffel symbols from a Metric object g_mn and its inverse g^mn, and return a Gamma object.
     """
-    coords = g.coords
-    dim = g.dim
+    coords = g_down.coords
+    dim = g_down.dim
     
     gamma_dict = {}
     
@@ -25,10 +25,10 @@ def christoffel_symbols(g):
         for i in range(dim):
             for j in range(dim):
                 s = sum(
-                    g.inv[k, l] * (
-                        d(g[l, i], coords[j]) +
-                        d(g[l, j], coords[i]) -
-                        d(g[i, j], coords[l])
+                    g_up[k, l] * (
+                        d(g_down[l, i], coords[j]) +
+                        d(g_down[l, j], coords[i]) -
+                        d(g_down[i, j], coords[l])
                     )
                     for l in range(dim)
                 )

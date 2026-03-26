@@ -67,12 +67,12 @@ def ricci_tensor(metric, Riemann):
 
     return Ricci(Ricci_dict)
 
-def scalar_curvature(metric, Ricci):
-    dim = metric.dim
+def scalar_curvature(g_up, Ricci):
+    dim = g_up.dim
 
     return sp.simplify(
         sum(
-            metric.inv[i, j] * Ricci[i, j]
+            g_up[i, j] * Ricci[i, j]
             for i in range(dim)
             for j in range(dim)
         )

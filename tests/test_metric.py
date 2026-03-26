@@ -8,37 +8,50 @@ def test_metric() :
         [0, 1]
     ])
 
+    metric_inv = metric.inv()   
+
     assert metric[0, 0] == 1
     assert metric[0, 1] == 0
     assert metric[1, 0] == 0
     assert metric[1, 1] == 1
 
-    assert metric.inv[0, 0] == 1
-    assert metric.inv[0, 1] == 0
-    assert metric.inv[1, 0] == 0
-    assert metric.inv[1, 1] == 1
+    assert metric_inv[0, 0] == 1
+    assert metric_inv[0, 1] == 0
+    assert metric_inv[1, 0] == 0
+    assert metric_inv[1, 1] == 1
+
+def test_metric_role() :
+
+    metric = Metric("x y", [
+        [1, 0],
+        [0, 1]
+    ], role="g_down")
+
+    metric_inv = metric.inv()   
+
+    assert metric.role == "g_down"
+    assert metric_inv.role == "g_up"
     
 def test_metric_inverse() :
 
-    metric = Metric("x y", [
+    g = Metric("x y", [
         [2, 1],
         [1, 1]
     ])
 
-    assert metric[0, 0] == 2
-    assert metric[0, 1] == 1
-    assert metric[1, 0] == 1
-    assert metric[1, 1] == 1
+    assert g[0, 0] == 2
+    assert g[0, 1] == 1
+    assert g[1, 0] == 1
+    assert g[1, 1] == 1
+    
+    g_inv = g.inv()
 
-    assert metric.inv[0, 0] == 1
-    assert metric.inv[0, 1] == -1
-    assert metric.inv[1, 0] == -1
-    assert metric.inv[1, 1] == 2
+    assert g_inv[0, 0] == 1
+    assert g_inv[0, 1] == -1
+    assert g_inv[1, 0] == -1
+    assert g_inv[1, 1] == 2
 
-    assert metric.inv.inv[0, 0] == 2
-    assert metric.inv.inv[0, 1] == 1
-    assert metric.inv.inv[1, 0] == 1
-    assert metric.inv.inv[1, 1] == 1
+
     
 def test_metric_dim() :
     minkowski_metric = Metric("t x1 x2 x3", [
@@ -47,9 +60,10 @@ def test_metric_dim() :
         [0, 0, -1, 0],
         [0, 0, 0, -1]
     ])
+    minkowski_metric_inv = minkowski_metric.inv()
 
     assert minkowski_metric.dim == 4
-    assert minkowski_metric.inv.dim == 4
+    assert minkowski_metric_inv.dim == 4
 
 def test_create_matrix() :
     import sympy as sp

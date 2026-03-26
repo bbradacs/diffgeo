@@ -1,6 +1,6 @@
 import sympy as sp
 import pytest
-from diffgeo import create_metric, christoffel_symbols, riemann_tensor, ricci_tensor, scalar_curvature
+from diffgeo import create_metric, christoffel_symbols, metric, riemann_tensor, ricci_tensor, scalar_curvature
 
 def test_unit_sphere_scalar_curvature():
     """Test scalar curvature for a unit 2-sphere: should be 2."""
@@ -13,11 +13,12 @@ def test_unit_sphere_scalar_curvature():
         ]
 
     # Build objects
-    metric = create_metric("theta phi", create_func)
-    gamma = christoffel_symbols(metric)
-    riemann = riemann_tensor(metric, gamma)
-    ricci = ricci_tensor(metric, riemann)
-    scalar = scalar_curvature(metric, ricci)
+    g_down = create_metric("theta phi", create_func)
+    g_up = g_down.inv()
+    gamma = christoffel_symbols(g_down, g_up)
+    riemann = riemann_tensor(g_down, gamma)
+    ricci = ricci_tensor(g_down, riemann)
+    scalar = scalar_curvature(g_up, ricci)
 
     # Assert scalar curvature
     assert scalar == 2, f"Scalar curvature mismatch: {scalar}"
