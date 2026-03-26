@@ -13,19 +13,28 @@ Christoffel Symbols
 
 Riemann Curvature Tensor
 
+```math
 R^{\rho}_{\;\sigma\mu\nu} =
 \partial_\mu \Gamma^{\rho}_{\nu\sigma}
 - \partial_\nu \Gamma^{\rho}_{\mu\sigma}
 + \Gamma^{\rho}_{\mu\lambda} \Gamma^{\lambda}_{\nu\sigma}
 - \Gamma^{\rho}_{\nu\lambda} \Gamma^{\lambda}_{\mu\sigma}
+```
 
 Ricci Tensor and Scalar Curvature
 
+```math
 R_{\mu\nu} = R^{\lambda}_{\;\mu\lambda\nu}
+```
 
+```math
 R = g^{\mu\nu} R_{\mu\nu}
+```
 
 
 Einstein Field Equations
 
+```math
 G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} \, T_{\mu\nu}
+```
+
