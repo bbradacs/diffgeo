@@ -1,9 +1,10 @@
+from .tensor import Tensor
 from .metric import Metric, create_contravariant_metric, create_covariant_metric, create_metrics
 from .derivatives import d
-from .christoffel import Gamma
-from .christoffel import christoffel_symbols
-from .curvature import riemann_tensor, ricci_tensor 
-from .curvature import scalar_curvature
+from .christoffel import Gamma, christoffel_symbols
+from .riemann import Riemann, riemann_tensor 
+from .ricci import Ricci, ricci_tensor
+from .scalar import scalar_curvature
 from .utils import christoffel_terms, format_christoffel
 from .utils import riemann_terms, format_riemann
 from .utils import ricci_terms, format_ricci
