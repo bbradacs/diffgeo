@@ -1,12 +1,8 @@
-from diffgeo import Metric, Gamma, christoffel_symbols, christoffel_terms, create_metric
+from diffgeo import Metric, Gamma, christoffel_symbols, christoffel_terms, create_metrics
 
 def test_flat_space():
 
-    g_down = Metric("x y", [
-        [1, 0],
-        [0, 1]
-    ])
-    g_up = g_down.inv()
+    g_down, g_up = create_metrics("x y", lambda *_ : [[1, 0], [0, 1]])
 
     gamma = christoffel_symbols(g_down, g_up)
 
@@ -23,8 +19,7 @@ def test_curved_space():
             [0, 0, r**2 * sp.sin(theta)**2]
         ]
 
-    g_down = create_metric("r theta phi", create_func)
-    g_up = g_down.inv()
+    g_down, g_up = create_metrics("r theta phi", create_func)
     gamma = christoffel_symbols(g_down, g_up)
     terms = christoffel_terms(g_down, gamma)
     #simplified = {k: sp.simplify(v) for k, v in terms.items()}

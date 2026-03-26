@@ -1,5 +1,4 @@
-from diffgeo import Metric, create_metric
-
+from diffgeo import Metric, create_metrics
 def test_metric() :
 
     metric = Metric("x y", [
@@ -64,8 +63,7 @@ def test_metric_dim() :
     assert minkowski_metric.dim == 4
     assert minkowski_metric_inv.dim == 4
 
-def test_create_matrix() :
-    import sympy as sp
+def test_create_metrics() :
 
     def create_func(trig, r, theta, phi):
         return [
@@ -74,6 +72,7 @@ def test_create_matrix() :
             [0, 0, r**2 * trig.sin(theta)**2]
         ]
 
-    metric = create_metric("r theta phi", create_func)
-
-    assert metric[0,1] == 0
+    g_down, g_up = create_metrics("r theta phi", create_func)
+    assert g_down.role == "g_down"
+    assert g_up.role == "g_up"
+    assert g_down[0,1] == 0

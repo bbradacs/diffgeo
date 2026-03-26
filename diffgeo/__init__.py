@@ -1,4 +1,4 @@
-from .metric import Metric, create_metric
+from .metric import Metric, create_contravariant_metric, create_covariant_metric, create_metrics
 from .derivatives import d
 from .christoffel import Gamma
 from .christoffel import christoffel_symbols

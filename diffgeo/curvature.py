@@ -1,8 +1,6 @@
 from itertools import product
 import sympy as sp
-from .derivatives import d
-import diffgeo
-from diffgeo import create_metric
+from diffgeo import d
 
 class Riemann:
     def __init__(self, data):
