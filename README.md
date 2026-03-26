@@ -3,11 +3,11 @@ Differential Geometry
 
 Christoffel Symbols
 
-\Gamma^{k}_{\;ij} = \frac{1}{2} \, g^{k\ell} \left(
+$$\Gamma^{k}_{\;ij} = \frac{1}{2} \, g^{k\ell} \left(
 \frac{\partial g_{\ell j}}{\partial x^i}
 + \frac{\partial g_{i \ell}}{\partial x^j}
 - \frac{\partial g_{ij}}{\partial x^\ell}
-\right)
+\right)$$
 
 Riemann Curvature Tensor
 
