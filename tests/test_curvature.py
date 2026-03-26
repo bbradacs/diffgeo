@@ -1,4 +1,3 @@
-import sympy as sp
 import pytest
 from diffgeo import create_metric, christoffel_symbols, metric, riemann_tensor, ricci_tensor, scalar_curvature
 
@@ -6,10 +5,10 @@ def test_unit_sphere_scalar_curvature():
     """Test scalar curvature for a unit 2-sphere: should be 2."""
 
     # 2-sphere metric function
-    def create_func(theta, _):
+    def create_func(trig, theta, _):
         return [
             [1, 0],
-            [0, sp.sin(theta)**2]
+            [0, trig.sin(theta)**2]
         ]
 
     # Build objects

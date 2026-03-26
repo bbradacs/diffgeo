@@ -32,7 +32,7 @@ class Metric:
 # Example:  metric = create_metric("r theta", lambda r, theta: [[1, 0], [0, r**2]] )
 def create_metric(coords_str, g_matrix_func):
     sp_coords = sp.symbols(coords_str)
-    sp_matrix = g_matrix_func(*sp_coords)
+    sp_matrix = g_matrix_func(sp, *sp_coords)
     return Metric(sp_coords, sp_matrix)
 
     

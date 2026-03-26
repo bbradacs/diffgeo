@@ -1,4 +1,3 @@
-import sympy as sp
 from diffgeo import Metric, Gamma, christoffel_symbols, christoffel_terms, create_metric
 
 def test_flat_space():
@@ -17,7 +16,7 @@ def test_flat_space():
                 assert gamma[k, i, j] == 0
 
 def test_curved_space():
-    def create_func(r, theta, phi):
+    def create_func(sp, r, theta, phi):
         return [
             [r, 0, 0],
             [0, r, 0],
@@ -28,6 +27,6 @@ def test_curved_space():
     g_up = g_down.inv()
     gamma = christoffel_symbols(g_down, g_up)
     terms = christoffel_terms(g_down, gamma)
-    simplified = {k: sp.simplify(v) for k, v in terms.items()}
-    print(simplified)
+    #simplified = {k: sp.simplify(v) for k, v in terms.items()}
+    #print(simplified)
 

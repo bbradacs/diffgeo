@@ -1,4 +1,3 @@
-import sympy as sp
 from diffgeo import Metric, create_metric
 
 def test_metric() :
@@ -68,11 +67,11 @@ def test_metric_dim() :
 def test_create_matrix() :
     import sympy as sp
 
-    def create_func(r, theta, phi):
+    def create_func(trig, r, theta, phi):
         return [
             [r, 0, 0],
             [0, r, 0],
-            [0, 0, r**2 * sp.sin(theta)**2]
+            [0, 0, r**2 * trig.sin(theta)**2]
         ]
 
     metric = create_metric("r theta phi", create_func)
