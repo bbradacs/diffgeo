@@ -23,11 +23,11 @@ def ricci_tensor(metric, riemann):
         )
 
     # Build dictionary instead of nested lists
-    Ricci_dict = {}
+    ricci_dict = {}
     for idx in product(range(dim), repeat=2):  # 2 indices: i, j
         val = ricci(*idx)
         if val != 0:  # optional: store only nonzero entries
-            Ricci_dict[idx] = val
+            ricci_dict[idx] = val
 
-    return Ricci(Ricci_dict, dim)
+    return Ricci(ricci_dict, dim)
 
