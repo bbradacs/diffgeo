@@ -1,4 +1,5 @@
-from diffgeo import Tensor, d
+from diffgeo import Tensor
+from .derivatives import d
 from itertools import product   
 import sympy as sp
 
@@ -74,7 +75,24 @@ def create_riemann_tensor(gamma):
 def create_ricci_tensor(riemann):
     return riemann.contract(0, 2)
 
+def create_scalar_thisworks(g_up, ricci):
+    dim = g_up.dim
+    total = 0
+
+    for i in range(dim):
+        for j in range(dim):
+            total += g_up[i, j] * ricci[i, j]
+
+    total = sp.simplify(total)
+
+    return Tensor({(): total}, [], dim, coords=g_up._coords)
+
+
+
 def create_scalar(g_up, ricci):
+    # contract first index
     tmp = g_up.contract_with(ricci, 0, 0)
-    return tmp.contract(0, 0)
+    # contract remaining indices
+    scalar = tmp.contract(0, 1)
+    return scalar
 

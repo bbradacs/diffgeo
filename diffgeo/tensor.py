@@ -1,3 +1,6 @@
+from itertools import product
+import sympy as sp
+
 # Model a Tensor
 # 
 # Components       dict
@@ -33,65 +36,72 @@ class Tensor:
     def dim(self):
         return self._dim
     
-def contract(self, i, j):
-    """
-    Contract index i with index j.
-    Requires one 'up' and one 'down'.
-    """
-    if self._indices[i] == self._indices[j]:
-        raise ValueError("Can only contract one up with one down index")
 
-    new_indices = [
-        idx for k, idx in enumerate(self._indices)
-        if k not in (i, j)
-    ]
+    def contract(self, i, j):
+        if self._indices[i] == self._indices[j]:
+            raise ValueError("Can only contract one up with one down index")
 
-    new_data = {}
+        new_indices = [idx for k, idx in enumerate(self._indices) if k not in (i, j)]
+        new_data = {}
 
-    for key in self._data:
-        for k in range(self._dim):
-            new_key = tuple(
-                key[m] if m not in (i, j) else None
-                for m in range(len(key))
-            )
+        for key, val in self._data.items():
+            # sum over the contracted index
+            if key[i] == key[j]:
+                reduced_key = tuple(key[m] for m in range(len(key)) if m not in (i, j))
+                new_data[reduced_key] = new_data.get(reduced_key, 0) + val
 
-            # replace contracted indices with k
-            full_key = list(key)
-            full_key[i] = k
-            full_key[j] = k
+        return Tensor(new_data, new_indices, self._dim, self._coords)
 
-            val = self._data.get(tuple(full_key), 0)
 
-            reduced_key = tuple(
-                full_key[m] for m in range(len(full_key))
-                if m not in (i, j)
-            )
+    def contract_with(self, other, i, j):
+        if self._indices[i] == other._indices[j]:
+            raise ValueError("Must contract one up with one down")
 
-            new_data[reduced_key] = new_data.get(reduced_key, 0) + val
+        if self._dim != other._dim:
+            raise ValueError("Dimension mismatch")
 
-    return Tensor(new_data, new_indices, self._dim)
+        new_indices = (
+            [idx for k, idx in enumerate(self._indices) if k != i] +
+            [idx for k, idx in enumerate(other._indices) if k != j]
+        )
 
-def contract_with(self, other, i, j):
-    """
-    Contract self index i with other index j.
-    """
-    if self._indices[i] == other._indices[j]:
-        raise ValueError("Must contract one up with one down")
+        new_data = {}
 
-    new_indices = (
-        [idx for k, idx in enumerate(self._indices) if k != i] +
-        [idx for k, idx in enumerate(other._indices) if k != j]
-    )
+        # iterate over ALL index combinations of result tensor
+        for result_key in product(range(self._dim), repeat=len(new_indices)):
 
-    new_data = {}
+            total = 0
 
-    for key1, val1 in self._data.items():
-        for key2, val2 in other._data.items():
-            if key1[i] == key2[j]:
-                new_key = (
-                    tuple(key1[k] for k in range(len(key1)) if k != i) +
-                    tuple(key2[k] for k in range(len(key2)) if k != j)
-                )
-                new_data[new_key] = new_data.get(new_key, 0) + val1 * val2
+            # sum over contracted index
+            for k in range(self._dim):
 
-    return Tensor(new_data, new_indices, self._dim)
+                # reconstruct full keys for self and other
+                key_self = []
+                key_other = []
+
+                idx_res = 0
+
+                # rebuild self key
+                for m in range(len(self._indices)):
+                    if m == i:
+                        key_self.append(k)
+                    else:
+                        key_self.append(result_key[idx_res])
+                        idx_res += 1
+
+                # rebuild other key
+                for m in range(len(other._indices)):
+                    if m == j:
+                        key_other.append(k)
+                    else:
+                        key_other.append(result_key[idx_res])
+                        idx_res += 1
+
+                total += self[tuple(key_self)] * other[tuple(key_other)]
+
+            if total != 0:
+                new_data[result_key] = sp.simplify(total)
+
+        coords = self._coords or other._coords
+        return Tensor(new_data, new_indices, self._dim, coords)   
+ 
