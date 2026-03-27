@@ -70,3 +70,28 @@ def contract(self, i, j):
             new_data[reduced_key] = new_data.get(reduced_key, 0) + val
 
     return Tensor(new_data, new_indices, self._dim)
+
+def contract_with(self, other, i, j):
+    """
+    Contract self index i with other index j.
+    """
+    if self._indices[i] == other._indices[j]:
+        raise ValueError("Must contract one up with one down")
+
+    new_indices = (
+        [idx for k, idx in enumerate(self._indices) if k != i] +
+        [idx for k, idx in enumerate(other._indices) if k != j]
+    )
+
+    new_data = {}
+
+    for key1, val1 in self._data.items():
+        for key2, val2 in other._data.items():
+            if key1[i] == key2[j]:
+                new_key = (
+                    tuple(key1[k] for k in range(len(key1)) if k != i) +
+                    tuple(key2[k] for k in range(len(key2)) if k != j)
+                )
+                new_data[new_key] = new_data.get(new_key, 0) + val1 * val2
+
+    return Tensor(new_data, new_indices, self._dim)

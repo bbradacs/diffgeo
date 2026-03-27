@@ -34,3 +34,5 @@ def test_often_used() :
     print("\nRicci tensor (nonzero entries):")
     for key, val in ricci._data.items():
         print(f"{key}: {val}")
+
+test_new_
