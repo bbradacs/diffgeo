@@ -1,4 +1,5 @@
 from itertools import product
+import copy
 import sympy as sp
 
 # Model a Tensor
@@ -25,6 +26,11 @@ class Tensor:
         return self._data.get(key, 0)
 
     @property
+    def items(self):
+        """Return a view of (index_tuple, value) pairs."""
+        return self._data.items()
+    
+    @property
     def indices(self):
         return self._indices
 
@@ -36,7 +42,43 @@ class Tensor:
     def dim(self):
         return self._dim
     
+    def copy(self):
+        """Deep copy of the tensor"""
+        return Tensor(copy.deepcopy(self._data),
+                      self._indices[:],
+                      self._dim,
+                      self._coords[:] if self._coords else None)
+    
 
+    def tensor_product(self, other):
+        """Outer product: concatenate indices and multiply components"""
+        new_indices = self._indices + other._indices
+        new_data = {}
+        for key1, val1 in self._data.items():
+            for key2, val2 in other._data.items():
+                new_key = key1 + key2
+                new_data[new_key] = sp.simplify(val1 * val2)
+        coords = self._coords or other._coords
+        return Tensor(new_data, new_indices, self._dim, coords)
+
+    def __mul__(self, other):
+        """Tensor * Tensor => tensor product, Tensor * scalar => scale"""
+        if isinstance(other, Tensor):
+            return self.tensor_product(other)
+        elif isinstance(other, (int, float, sp.Basic)):
+            # scale all components by scalar
+            new_data = {k: v*other for k,v in self.items}
+            return Tensor(new_data, self._indices, self._dim, self._coords)
+        else:
+            raise TypeError(f"Cannot multiply Tensor by {type(other)}")
+
+    def __rmul__(self, other):
+        """scalar * Tensor => scale"""
+        if isinstance(other, (int, float, sp.Basic)):
+            return self * other  # delegate to __mul__
+        else:
+            raise TypeError(f"Cannot multiply {type(other)} by Tensor")
+       
     def contract(self, i, j):
         if self._indices[i] == self._indices[j]:
             raise ValueError("Can only contract one up with one down index")
