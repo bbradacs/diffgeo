@@ -143,3 +143,27 @@ def test_legacy():
 
     # Assert scalar curvature
     assert sp.simplify(scalar - 2) == 0, f"Scalar curvature mismatch: {scalar}"
+
+def test_metric() :
+
+    metric = Metric("x y", [
+        [1, 0],
+        [0, 1]
+    ])
+
+    assert metric[0, 0] == 1
+    assert metric[0, 1] == 0
+    assert metric[1, 0] == 0
+    assert metric[1, 1] == 1
+    
+
+def test_metric_dim() :
+    minkowski_metric, minkowski_metric_inv = _create_metrics("t x1 x2 x3", lambda sp, t, x1, x2, x3: [
+        [1, 0, 0, 0],
+        [0, -1, 0, 0],
+        [0, 0, -1, 0],
+        [0, 0, 0, -1]
+    ])
+
+    assert minkowski_metric.dim == 4
+    assert minkowski_metric_inv.dim == 4

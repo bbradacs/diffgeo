@@ -1,5 +1,31 @@
 import pytest
-from diffgeo import create_metric_tensors, create_gamma_tensor, create_riemann_tensor, create_ricci_tensor, create_scalar, scalar
+import sympy as sp
+from diffgeo import create_metric_tensors, create_gamma_tensor, create_riemann_tensor, create_ricci_tensor, create_scalar_tensor
+
+def test_flat_space():
+
+    g_down, g_up = create_metric_tensors("x y", lambda *_ : [[1, 0], [0, 1]])
+
+    gamma = create_gamma_tensor(g_down, g_up)
+
+    for k in range(2):
+        for i in range(2):
+            for j in range(2):
+                assert gamma[k, i, j] == 0
+
+def test_curved_space():
+    def create_func(sp, r, theta, phi):
+        return [
+            [r, 0, 0],
+            [0, r, 0],
+            [0, 0, r**2 * sp.sin(theta)**2]
+        ]
+
+    g_down, g_up = create_metric_tensors("r theta phi", create_func)
+    gamma = create_gamma_tensor(g_down, g_up)
+    assert(gamma.dim == 3)
+    assert(gamma.rank == 3)
+
 
 def test_spherically_symmetric() :
     import sympy as sp
@@ -19,7 +45,7 @@ def test_spherically_symmetric() :
     gamma = create_gamma_tensor(g_down_t, g_up_t)
     riemann = create_riemann_tensor(gamma)
     ricci = create_ricci_tensor(riemann)
-    scalar = create_scalar(g_up_t, ricci)
+    scalar = create_scalar_tensor(g_up_t, ricci)
 
     print("\nChristoffel Symbols (nonzero entries):")
     for key, val in gamma.items:
@@ -54,7 +80,7 @@ def test_unit_sphere_tensor():
     gamma   = create_gamma_tensor(g_down_t, g_up_t)
     riemann = create_riemann_tensor(gamma)
     ricci   = create_ricci_tensor(riemann)
-    scalar  = create_scalar(g_up_t, ricci)
+    scalar  = create_scalar_tensor(g_up_t, ricci)
 
 
     # print nonzero entries for inspection
