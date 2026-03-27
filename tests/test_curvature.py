@@ -1,8 +1,7 @@
 import pytest
-from diffgeo import create_metrics, christoffel_symbols, metric, riemann_tensor, ricci_tensor, scalar_curvature
-from diffgeo.utils import christoffel_terms
+from diffgeo import create_metric_tensors, create_gamma_tensor, create_riemann_tensor, create_ricci_tensor, create_scalar, scalar
 
-def test_often_used() :
+def test_spherically_symmetric() :
     import sympy as sp
 
     def create_func(trig, t, r, theta, phi):
@@ -16,23 +15,63 @@ def test_often_used() :
             [0, 0, 0, r**2 * sin(theta)**2]
         ]
 
-    g_down, g_up = create_metrics("t r theta phi", create_func)
-    gamma = christoffel_symbols(g_down, g_up)
-    riemann = riemann_tensor(g_down, gamma)
-    ricci = ricci_tensor(g_down, riemann)
-    
-    terms = christoffel_terms(g_down, gamma)
-    simplified = {k: sp.simplify(v) for k, v in terms.items()}
+    g_down_t, g_up_t = create_metric_tensors("t r theta phi", create_func)
+    gamma = create_gamma_tensor(g_down_t, g_up_t)
+    riemann = create_riemann_tensor(gamma)
+    ricci = create_ricci_tensor(riemann)
+    scalar = create_scalar(g_up_t, ricci)
+
     print("\nChristoffel Symbols (nonzero entries):")
-    for key, val in terms.items():
+    for key, val in gamma.items:
         print(f"{key}: {val}")
 
     print("\nRiemann tensor (nonzero entries):")
-    for key, val in riemann._data.items():
+    for key, val in riemann.items:
         print(f"{key}: {val}")
 
     print("\nRicci tensor (nonzero entries):")
-    for key, val in ricci._data.items():
+    for key, val in ricci.items:
         print(f"{key}: {val}")
 
-test_new_
+    print("\nRicci scalar:")
+    print(f"scalar.rank: {scalar.rank}")
+    for key, val in scalar.items:
+        print(f"{key}: {val}")
+
+def test_unit_sphere_tensor():
+    """Test scalar curvature for a unit 2-sphere: should be 2."""
+
+    # 2-sphere metric function
+    def create_func(trig, theta, _):
+        sin = trig.sin
+        return [
+            [1, 0],
+            [0, sin(theta)**2]
+        ]
+
+    # Build objects
+    g_down_t, g_up_t = create_metric_tensors("theta phi", create_func)
+    gamma   = create_gamma_tensor(g_down_t, g_up_t)
+    riemann = create_riemann_tensor(gamma)
+    ricci   = create_ricci_tensor(riemann)
+    scalar  = create_scalar(g_up_t, ricci)
+
+
+    # print nonzero entries for inspection
+    print("\nRiemann tensor (nonzero entries):")
+    for key, val in riemann.items:
+        print(f"{key}: {val}")
+
+    print("\nRicci tensor (nonzero entries):")
+    for key, val in ricci.items:
+        print(f"{key}: {val}")
+
+    print("\nScalar curvature:")
+    print(f"scalar.rank: {scalar.rank}")
+    for key, val in scalar.items:
+        print(f"{key}: {val}")
+
+    # Assert scalar curvature
+    assert scalar[()] == 2, f"Scalar curvature mismatch: {scalar}"
+
+
