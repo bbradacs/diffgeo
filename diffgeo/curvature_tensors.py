@@ -59,3 +59,20 @@ def create_scalar_tensor(g_up, ricci):
     scalar = tmp.contract(0, 1)
     return scalar
 
+def create_einstein_tensor(g_down, ricci, scalar):
+    dim = g_down.dim
+    coords = g_down._coords
+
+    # extract scalar value (rank-0 tensor)
+    scalar_val = next(iter(scalar.items))[1]
+
+    data = {}
+
+    for i in range(dim):
+        for j in range(dim):
+            val = ricci[i, j] - sp.Rational(1, 2) * g_down[i, j] * scalar_val
+            val = sp.simplify(val)
+            if val != 0:
+                data[(i, j)] = val
+
+    return Tensor(data, ['down', 'down'], dim, coords)
